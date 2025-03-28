@@ -1,1 +1,1 @@
-# LlamaAnimate
+Initial project setup for LlamaAnimate
