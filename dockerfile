@@ -1,0 +1,29 @@
+FROM ubuntu:latest
+WORKDIR /project
+RUN apt-get update && \
+    apt-get install -y pulseaudio && \
+    apt-get install -y alsa-utils && \
+	    apt-get clean
+
+RUN apt-get install curl -y
+
+RUN yes "1" | curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs |  sh -s -- -y
+
+RUN . "$HOME/.cargo/env"
+
+
+RUN apt-get install gcc -y
+RUN apt-get install libssl-dev -y
+RUN apt-get install pkg-config -y
+RUN apt-get install netcat-traditional -y
+RUN echo "curl http://localhost:11434/api/pull -d '{ "model": "llama3.2"}'" > install_ollama.sh
+
+
+
+#COPY ./src .
+#COPY ./target .
+#COPY ./Cargo.lock .
+#COPY ./Cargo.toml .
+#COPY ./target .
+COPY . . 
+CMD ["cargo","run"]
