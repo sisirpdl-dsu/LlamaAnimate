@@ -5,6 +5,7 @@ use std::fs::File;
 use std::io::prelude::*;
 
 use std::process::Command;
+use serde_json::Value;
 
 fn create_file(message: String, file_name: &str) -> io::Result<()> {
     let mut file = File::create(file_name)?;
@@ -30,7 +31,7 @@ async fn main() -> Result<(), reqwest::Error> {
 let model = "llama3.2";
 let companion_name = "Emily";
 let msg = json!(
-        {"model": "llama3.2",
+        {"model": model,
         });
             client
             .post("http://localhost:11434/api/pull")
@@ -38,6 +39,10 @@ let msg = json!(
             .body(msg.to_string())
             .send()
             .await?;
+    let mut chat: Vec<Value> = Vec::new();
+    chat.push(json!(
+            {"role":"system","content":format!("You are my girlfriend. Your name is {companion_name} Please do short responses. ")})
+    );
 
 
     loop {
@@ -54,22 +59,35 @@ let msg = json!(
         if input.eq_ignore_ascii_case("bye") {
             break;
         }
-        let msg = json!(
-        {"model": "llama3.2",
-        "prompt": input,
-        "system": format!("You are my girlfriend. Your name is {companion_name} Please do short responses. "),
-        "options":{
-        "num_ctx":4096,
+        chat.push(json!(
+        {
+            "role":"user","content":format!("{input}")
         }
-        });
+        ));
 
+
+        let msg = json!(
+            {"model": "llama3.2",
+
+            //"messages":[{"role":"system","content":&format!("You are my girlfriend. Your name is {companion_name} Please do short responses. ")},{"role":"user","content":format!("{input}")}],
+            "messages":Value::Array(chat.clone()),
+
+            "options":{
+                "repeat_penalty": 1.2,
+            }
+
+            });
+
+        //msg["messages"]= Value::Array(chat.clone());
+
+        //println!("{}",msg.get("messages").unwrap());
         let mut reply = String::new();
         if let Ok(response) = client
-            .post("http://localhost:11434/api/generate")
-            .header("Content-Type", "application/json")
-            .body(msg.to_string())
-            .send()
-            .await
+            .post("http://localhost:11434/api/chat")
+                .header("Content-Type", "application/json")
+                .body(msg.to_string())
+                .send()
+                .await
         {
             //let r = response.json::<serde_json::Value>().await?;
             let body = response.text().await?;
@@ -79,10 +97,12 @@ let msg = json!(
                     serde_json::from_str(token);
                 if json.is_ok() {
                     let json = json.unwrap();
-                    let temp = match json.get("response") {
-                        Some(x) => x.to_string(),
-                        None => String::new(),
-                    };
+                    let temp = json.get("message").unwrap();
+
+                    chat.push(temp.clone());
+
+                    let temp = temp.get("content").unwrap();
+                    let temp = temp.to_string();
                     let temp = temp.trim();
                     let temp = temp.replace("\\n", "");
                     let temp = temp.replace("\\", "");
