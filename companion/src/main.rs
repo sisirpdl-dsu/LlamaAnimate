@@ -145,7 +145,7 @@ let analyzer = SentimentIntensityAnalyzer::new();
             if score>0.0{
                 "happy.txt"
             }
-            else if score< -0.04 {
+            else if score< -0.08 {
                 "angry.txt"
             }else{
                 "happy.txt"
