@@ -47,8 +47,9 @@ RUN apt-get install pkg-config -y
 
 
 #CMD nc -l -p 69 -k | ./piper/piper --cuda --model en_GB-semaine-medium.onnx --output-raw |   aplay -r 22050 -f S16_LE -t raw -
+#CMD ["while","true","do","nc -l -p 69","|","tee -a conversation.txt","|","./piper/piper --cuda --model en_GB-semaine-medium.onnx --output_file reply.wav; echo \"\">>output.txt", "&&", "play reply.wav;", "&&","cat conversation.txt >> output.txt;", "&&", "rm conversation.txt; done"]
+#CMD while true; do nc -l -p 69 | tee -a conversation.txt | ./piper/piper --cuda --model en_GB-semaine-medium.onnx --output_file reply.wav; echo \"\">>output.txt", "&& play reply.wav; && cat conversation.txt >> output.txt && rm conversation.txt; done
 CMD while true; do nc -l -p 69 | ./piper/piper --cuda --model en_GB-semaine-medium.onnx --output_file reply.wav; play reply.wav; done
-
 #WORKDIR /root/.ollama/models/manifests/registry.ollama.ai/library
 #RUN test -e model || wget https://huggingface.co/deepseek-ai/DeepSeek-R1/resolve/main/model-00001-of-000163.safetensors?download=true -O model
 # -----------------------------------------------------------------------------

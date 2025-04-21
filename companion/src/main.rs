@@ -7,6 +7,10 @@ use std::io::prelude::*;
 use std::process::Command;
 use serde_json::Value;
 
+
+use vader_sentimental::SentimentIntensityAnalyzer;
+
+
 fn create_file(message: String, file_name: &str) -> io::Result<()> {
     let mut file = File::create(file_name)?;
     let _ = file.write(message.as_bytes())?;
@@ -26,7 +30,7 @@ use std::io;
 async fn main() -> Result<(), reqwest::Error> {
     let client = reqwest::Client::new();
     //let x = reqwest::get("http://localhost:11434/").await?;
-
+std::process::Command::new("clear").status().unwrap();
     let mut input = String::new();
 let model = "llama3.2";
 let companion_name = "Emily";
@@ -119,13 +123,45 @@ let msg = json!(
         let filename = "reply.txt".to_string();
         let _ = create_file(reply.clone(), &filename);
         let r = create_wav();
-        println!("{companion_name}: {}", reply);
+        //println!("{companion_name}: {}", reply);
+        //
+        //
+
+
+
+
+
+
+
+
+
+
+
+        //let analysis = sentiment::analyze(reply.to_string());
+    
+let analyzer = SentimentIntensityAnalyzer::new();
+    let score = analyzer.polarity_scores(&reply).compound;
+        let file_name =
+            if score>0.0{
+                "happy.txt"
+            }
+            else if score< -0.04 {
+                "angry.txt"
+            }else{
+                "happy.txt"
+            };
+
+        let mut file = File::open(file_name).expect("Failed to open happy.txt");
+        let mut contents = String::new();
+        file.read_to_string(&mut contents).expect("failed to read file");
+        std::process::Command::new("clear").status().unwrap(); //clear the screen
+        println!("\x1b[32m{}\x1b[0m",contents); //print the art
         match r {
             Ok(_) => {}
             Err(e) => {
                 dbg!("{}", e.to_string());
             }
-        }
+            }
     }
     Ok(())
 }
