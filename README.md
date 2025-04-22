@@ -5,21 +5,23 @@ Initial project setup for LlamaAnimate
 
 # Instalation guide
 
-## 1, clone repo
-
-```git clone https://github.com/sisirpdl-dsu/LlamaAnimate.git```
-
-## 2, install wsl (if you dont have it already)
-
+## 1, Enter WSL (if you don't have it, install it using the command below)
 ```
 wsl --install -d Ubuntu
 wsl --update
 ```
+Enter using this command
+```
+wsl
+```
+## 2, clone repo while in WSL
+
+```git clone https://github.com/sisirpdl-dsu/LlamaAnimate.git```
 
 ## 3, move into project
 
 ```
-cd ./LLamaAnimate/companion
+cd ./LlamaAnimate/companion
 ```
 
 ## 4, install prerequisites using prereq.sh
@@ -39,22 +41,22 @@ sudo docker compose up
 ```
 
 
-## 6, enter the 'master' container
+## 6, enter a new tab, then enter the 'master' container
 
 ```
 sudo docker exec -it master bash
 ```
 
-## 7, run the rust program using cargo 
+## 7, run the rust program using cargo in the new tab
 
 ```
 cargo run 
 ```
 
-Now you can chat with your comanion
+Now you can chat with your comanion, just type in the window once the tab has cleared. If you want to see how the program is thinking in the background, look at the original tab.
 
-
-## 8, use docker compose to stop
+## Once done, quit out of the chat being using the command ctrl+c, then typing exit
+## In the original window, use docker compose to stop
 
 ```
 sudo docker compose down
