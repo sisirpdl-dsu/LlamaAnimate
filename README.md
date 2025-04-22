@@ -56,7 +56,7 @@ cargo run
 Now you can chat with your comanion, just type in the window once the tab has cleared. If you want to see how the program is thinking in the background, look at the original tab.
 
 ## Once done, quit out of the chat being using the command ctrl+c, then typing exit
-## In the original window, use docker compose to stop
+## In the original window, press ctrl+c to stop the progrom, then use docker compose to stop the container
 
 ```
 sudo docker compose down
