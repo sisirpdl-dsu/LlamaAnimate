@@ -16,8 +16,8 @@ RUN apt-get install gcc -y
 RUN apt-get install libssl-dev -y
 RUN apt-get install pkg-config -y
 RUN apt-get install netcat-traditional -y
-RUN echo "curl http://localhost:11434/api/pull -d '{ "model": "llama3.2"}'" > install_ollama.sh
-
+#RUN echo "curl http://localhost:11434/api/pull -d '{ "model": "llama3.2"}'" > install_ollama.sh
+#RUN echo "curl http://localhost:11434/api/pull -d '{ "model": "artifish/llama3.2-uncensored"}'" > install_ollama.sh
 
 
 #COPY ./src .
@@ -26,4 +26,4 @@ RUN echo "curl http://localhost:11434/api/pull -d '{ "model": "llama3.2"}'" > in
 #COPY ./Cargo.toml .
 #COPY ./target .
 COPY . . 
-CMD ["cargo","run"]
+#CMD ["cargo","run"]
